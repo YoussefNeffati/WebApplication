@@ -272,48 +272,57 @@ class Grille {
   }
 
   // il y a ici un probleme que je n'arrive pas à résoudre: 3 cookies se suppriment verticalement, le cookie le plus en dessous 
-  // va prendre la valeur au dessus de lui et donc le cookie de même forme que lui, il faudrait alors copier le cookie 3 cases au dessus de lui
+  // va prendre la valeur au dessus de lui et donc le cookie de même forme que lui, il faudrait alors prendre le cookie 3 de cases au dessus de lui
   // mais cela est trop compliqué à mettre en place donc je suis resté sur cette version stable
 
   FaireTomber() {
+  this.nbVide = 0;
+  for (let ligne = this.nbLignes - 1; ligne >= 0; ligne--) {
+    for (let colonne = this.nbColonnes - 1; colonne >= 0; colonne--) {
 
-    this.nbVide = 0;
-    for (let ligne = this.nbLignes - 1; ligne >= 0; ligne--) {
-      for (let colonne = this.nbColonnes - 1; colonne >= 0; colonne--) {
+      //l'animation ne marche pas de cette manière
+      //wait(300);
+      
+      let cookie1 = this.tabCookies[ligne][colonne];
 
-        let cookie1 = this.tabCookies[ligne][colonne];
+      if (cookie1.isASupprimer() && ligne !==0) {
 
+        //cookie 2 est le cookie au dessus de notre cookie vide
+        let cookie2 = this.tabCookies[ligne - 1][colonne];          
 
-        if (cookie1.isASupprimer() && ligne !==0) {
+        //cookie 1 prend la valeur au dessus de notre cookie
+        cookie1.ajouter();
+        cookie1.type = cookie2.type;
+        cookie1.htmlImage.src = cookie2.htmlImage.src;
 
-          //cookie 2 est le cookie au dessus de notre cookie vide
-          let cookie2 = this.tabCookies[ligne - 1][colonne];          
+        //puis cookie2 se supprime car dans la boucle cookie 2 deviendra cookie 1 et prendra la valeur au desssus de lui
+        cookie2.supprimer();
 
-          //cookie 1 prend la valeur au dessus de notre cookie
-          cookie1.ajouter();
-          cookie1.type = cookie2.type;
-          cookie1.htmlImage.src = cookie2.htmlImage.src;
+        console.log("les cookies à la ligne " + (ligne - 1) + " descendent et vont à la ligne " + ligne);
 
-          //puis cookie2 se supprime car dans la boucle cookie 2 deviendra cookie 1 et prendra la valeur au desssus de lui
-          cookie2.supprimer();
-
-
-          console.log("les cookies à la ligne " + (ligne - 1) + " descendent et vont à la ligne " + ligne);
-
-          this.nbVide++;
-        }
-
-        //Si on est sur la derniere ligne, on copie un élement aléatoire du tableau sur notre cookie vide
-        else if (ligne === 0 && (cookie1.isASupprimer())) {
-          let cookie2 = this.tabCookies[Math.floor(Math.random() * 8) + 1][Math.floor(Math.random() * 8)];
-          cookie1.ajouter();
-          cookie1.type = cookie2.type;
-          cookie1.htmlImage.src = cookie2.htmlImage.src;
-          this.nbVide++;
-        }
-        
+        this.nbVide++;
       }
+
+      //Si on est sur la derniere ligne, on copie un élement aléatoire du tableau sur notre cookie vide
+      else if (ligne === 0 && (cookie1.isASupprimer())) {
+        let cookie2 = this.tabCookies[Math.floor(Math.random() * 8) + 1][Math.floor(Math.random() * 8)];
+        cookie1.ajouter();
+        cookie1.type = cookie2.type;
+        cookie1.htmlImage.src = cookie2.htmlImage.src;
+        this.nbVide++;
+      }
+      
     }
-    return this.nbVide !== 0;
   }
+  return this.nbVide !== 0;
 }
+
+}
+
+  function wait(ms){
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+   }
+ }
